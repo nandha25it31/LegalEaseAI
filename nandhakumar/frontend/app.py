@@ -1,3 +1,11 @@
+import os
+import sys
+
+# Allow imports from the project root
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 import streamlit as st
 import requests
 
@@ -79,7 +87,10 @@ st.markdown(
 # Backend URL
 # -----------------------------
 
-BACKEND_URL = "http://127.0.0.1:8000"
+BACKEND_URL = os.getenv(
+    "BACKEND_URL",
+    "http://127.0.0.1:8000"
+)
 
 
 # -----------------------------
@@ -160,12 +171,15 @@ if st.button("🚀 Generate Document"):
                     st.session_state["document"] = result["document"]
                     st.session_state["document_type"] = document_type
 
-                    st.success("✅ Document generated successfully!")
+                    st.success(
+                        "✅ Document generated successfully!"
+                    )
 
                 else:
                     st.error("Document generation failed.")
 
             else:
+
                 st.error(
                     f"Backend Error: {response.status_code}"
                 )
@@ -214,6 +228,7 @@ if "document" in st.session_state:
 
     st.divider()
 
+
     # -------------------------
     # Edit Document
     # -------------------------
@@ -228,6 +243,7 @@ if "document" in st.session_state:
 
     st.session_state["document"] = edited_document
 
+
     # -------------------------
     # Download Section
     # -------------------------
@@ -237,12 +253,17 @@ if "document" in st.session_state:
     col1, col2, col3 = st.columns(3)
 
     final_document = st.session_state["document"]
+
     final_type = st.session_state.get(
         "document_type",
         "Legal Document"
     )
 
+
+    # -------------------------
     # TXT
+    # -------------------------
+
     with col1:
 
         txt_data = format_txt(final_document)
@@ -254,7 +275,11 @@ if "document" in st.session_state:
             mime="text/plain"
         )
 
+
+    # -------------------------
     # DOCX
+    # -------------------------
+
     with col2:
 
         docx_data = format_docx(
@@ -272,7 +297,11 @@ if "document" in st.session_state:
             )
         )
 
+
+    # -------------------------
     # PDF
+    # -------------------------
+
     with col3:
 
         try:
