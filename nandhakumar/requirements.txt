@@ -2,7 +2,7 @@ fastapi
 uvicorn
 streamlit
 python-docx
-fpdf
+fpdf2
 Pillow
 requests
 google-generativeai
